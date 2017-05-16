@@ -24,4 +24,24 @@ public class CacheSystem {
 		keys.add(key);
 		expiryIndex.put(timeToLive, keys);
 	}
+
+	public Object get(String key) throws Exception {
+      if(cache.isEmpty())
+      {
+      	throw new Exception("Data is not available.");
+      }
+      Object value = cache.get(key);
+      if(value != null && !value.isExpired())
+      {
+      	return value;
+      }
+      throw new Exception("Data is not available.");
+	}
+
+	public synchronized void delete(String key) {
+		if(cache.isEmpty()) {
+          throw new Exception("Data is not available.");
+		}
+		cache.remove(key);
+	}
 }
