@@ -1,5 +1,11 @@
 package com.sideprojects.cachesystems.util;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class CacheCleaner extends Thread {
 	ConcurrentHashMap<String,ValueObj> cache = null;
 	TreeMap<Long,ArrayList<String>> expiryIndex = null;
@@ -7,7 +13,7 @@ public class CacheCleaner extends Thread {
 
 	int cleanUpFrequency = 1;
 
-	CacheCleaner(ConcurrentHashMap<String,ValueObj> cache,TreeMap<Long,ArrayList<String>> expiryIndex,int cleanUpFrequency)
+	public CacheCleaner(ConcurrentHashMap<String,ValueObj> cache,TreeMap<Long,ArrayList<String>> expiryIndex,int cleanUpFrequency)
 	{ 
        this.cache = cache;
        this.expiryIndex = expiryIndex;
@@ -16,11 +22,11 @@ public class CacheCleaner extends Thread {
 
 	public void run()
 	{
-	  long currentTime = null;
+	  Long currentTime = null;
       while(true)
       {
-         currentTime = System.currentTimeMills();
-         indexElement = cache.floorEntry(currentTime);
+         currentTime = System.currentTimeMillis();
+         indexElement = expiryIndex.floorEntry(currentTime);
 
          while(indexElement != null)
          {
@@ -30,16 +36,17 @@ public class CacheCleaner extends Thread {
          	{
               String key = iterator.next();
               cache.remove(key);
+              System.out.println("Removing "+key);
          	}
-         	expiryIndex.remove(currentTime);
-            indexElement = cache.floorEntry(currentTime);
+         	expiryIndex.remove(indexElement.getKey());
+            indexElement = expiryIndex.floorEntry(currentTime);
          }
 
          try
          {
            synchronized(this)
            {
-           	wait(cleanUpFrequency*30000);
+           	wait(cleanUpFrequency*30);
            }
          }
          catch(InterruptedException e)

@@ -7,11 +7,11 @@ public class ValueObj {
   public ValueObj(Object obj,long expiry)
   {
     this.obj = obj;
-    this.expiry = expiry+System.currentTimeMills();
+    this.expiry = expiry+System.currentTimeMillis();
   }
   
   public boolean isExpired()
   {
-    return expiry <= System.currentTimeMills();
+    return expiry <= System.currentTimeMillis();
   }
 }
