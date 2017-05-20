@@ -11,11 +11,11 @@ public class CacheSystem {
 	private ConcurrentHashMap<String, ValueObj> cache = null;
 	private TreeMap<Long, ArrayList<String>> expiryIndex = null;
 	private CacheCleaner cacheCleaner = null;
-	
+
 	CacheSystem() {
 		cache = new ConcurrentHashMap<String, ValueObj>();
 		expiryIndex = new TreeMap<Long, ArrayList<String>>();
-		cacheCleaner = new CacheCleaner(cache,expiryIndex,1);
+		cacheCleaner = new CacheCleaner(cache, expiryIndex, 1);
 		cacheCleaner.start();
 	}
 
